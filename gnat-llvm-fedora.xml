@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<gprconfig>
+
+  <compiler_description>
+    <name>GNAT_LLVM_FEDORA</name>
+    <executable prefix="1">(llvm-)gnatls</executable>
+    <version>
+      <external>${PREFIX}gnatls -v</external>
+      <grep regexp="^GNATLS.+?(\d+(\.\d+)?)" group="1"></grep>
+    </version>
+    <languages>Ada</languages>
+    <variable name="gcc_version">
+      <external>${PREFIX}gcc -v</external>
+      <grep regexp="^[-\w]*gcc \S+ (\S+)" group="1"></grep>
+    </variable>
+    <runtimes default="default,native,zfp">
+       <directory group="default" >/usr/lib64/libgnat-llvm/rts-native/adalib/</directory>
+       <directory group="1" >/usr/lib64/libgnat-llvm/rts-(.*)/adalib/</directory>
+    </runtimes>
+    <target>llvm</target>
+  </compiler_description>
+
+</gprconfig>

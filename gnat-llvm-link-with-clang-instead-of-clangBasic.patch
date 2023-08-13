@@ -1,0 +1,11 @@
+--- a/llvm-interface/gnat_llvm.gpr
++++ b/llvm-interface/gnat_llvm.gpr
+@@ -36,7 +36,7 @@
+       --  Force -static-libgcc via Required_Switches so that gprbuild does
+       --  not override it.
+       for Required_Switches use ("-static-libgcc", "-no-pie");
+-      for Switches ("Ada") use ("-static-libstdc++", "-lclangBasic");
++      for Switches ("Ada") use ("-static-libstdc++", "-lclang", "-lclang-cpp");
+    end Linker;
+ 
+    package CodePeer is

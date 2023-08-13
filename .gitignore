@@ -1,0 +1,4 @@
+*.tar.gz
+gcc-*.tar.xz
+gcc-*.tar.xz.sig
+gnu-keyring.gpg
