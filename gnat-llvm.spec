@@ -10,18 +10,19 @@
 # Upstream source information.
 %global upstream_owner        AdaCore
 %global upstream_name         gnat-llvm
-%global upstream_commit_date  20230810
-%global upstream_commit       6f1fa83db259e04b9442189f7ddc8f78beebc6e3
+%global upstream_commit_date  20240201
+%global upstream_commit       5d318d7a49f4523be1eb0be0ad6d0f4fe50a9c2f
 %global upstream_shortcommit  %(c=%{upstream_commit}; echo ${c:0:7})
 
 # Compatible major version of LLVM.
 %global llvm_version 16
 
 # Latest major version of LLVM available in Fedora.
-%global llvm_latest  16
+%global llvm_latest  17
 
 # GNAT-LLVM depends on a recent version of the GNAT source code.
-%global gcc_version  14-20230806
+%global gcc_version  14.0.1-20240208
+%global gcc_sha512   02054b26fe0500d4ad88deeb41b5d356b70dafcc3fcb98c790d79e78f1c9a1d77654d2b553b43ab273147d9cfe76b801c2c9a1903caafce84bbffd5fb177c53d
 
 Name:           gnat-llvm
 Version:        0^%{upstream_commit_date}git%{upstream_shortcommit}
@@ -34,10 +35,20 @@ URL:            https://github.com/%{upstream_owner}/%{upstream_name}
 Source0:        https://github.com/%{upstream_owner}/%{upstream_name}/archive/%{upstream_commit}.tar.gz#/%{name}-%{upstream_shortcommit}.tar.gz
 
 # The compiler is build from the GNAT front-end source code.
-Source1:        https://gcc.gnu.org/pub/gcc/snapshots/%{gcc_version}/gcc-%{gcc_version}.tar.xz
+Source1:        https://src.fedoraproject.org/repo/pkgs/gcc/gcc-%{gcc_version}.tar.xz/sha512/%{gcc_sha512}/gcc-%{gcc_version}.tar.xz
 
+
+# [Fedora-specific] Older version of the LLVM tools have a postfix.
+%if %{llvm_version} == 16
+Patch:          %{name}-use-llvm16.patch
+%endif
 # [Fedora-specific] Link with libclang and libclang-cpp, not with libclangBasic.
 Patch:          %{name}-link-with-clang-instead-of-clangBasic.patch
+# [LLVM] Don't use `LLVMCreateTargetMachineWithABI` yet.
+#    New API call will be available from LLVM 18 onwards.
+#    See also: https://github.com/llvm/llvm-project/pull/68406
+Patch:          %{name}-revert-270d0f.patch
+Patch:          %{name}-revert-63b53f.patch
 
 BuildRequires:  gcc-gnat gcc-c++ clang gprbuild make
 # A fedora-gnat-project-common that contains GPRbuild_flags is needed.
@@ -225,5 +236,8 @@ find %{buildroot} -exec stat --format "%A %n" {} \;
 ###############
 
 %changelog
+* Sun Feb 11 2024 Dennis van Raaij <dvraaij@fedoraproject.org> - 0^20240201git5d318d7-1
+- Shapshot updated to: Git commit 5d318d7, 2024-02-01.
+
 * Sun Aug 13 2023 Dennis van Raaij <dvraaij@fedoraproject.org> - 0^20230810git6f1fa83-1
 - New package, snapshot: Git commit 6f1fa83, 2023-08-10.

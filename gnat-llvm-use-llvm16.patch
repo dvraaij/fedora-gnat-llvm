@@ -1,0 +1,24 @@
+--- a/llvm-interface/Makefile
++++ b/llvm-interface/Makefile
+@@ -28,7 +28,7 @@
+   LLVM_SRC=$(shell cd `$(LLVM_CONFIG) --includedir`/../..;pwd)
+   CLANG_CXXFLAGS=-I$(LLVM_BUILD)/tools/clang/include -I$(LLVM_SRC)/clang/include
+ else
+-  LLVM_CONFIG=llvm-config
++  LLVM_CONFIG=llvm-config-16
+   CLANG_CXXFLAGS=
+ endif
+
+--- a/llvm-interface/check_for_LLVM_aliasing_bug.sh
++++ b/llvm-interface/check_for_LLVM_aliasing_bug.sh
+@@ -110,8 +110,8 @@
+ !24 = !{!10, !13, i64 4, i64 4}
+
+ EOF
+-opt -O2 obj/c43204h.ll -o obj/c43204h_o.bc
+-llvm-dis obj/c43204h_o.bc
++opt-16 -O2 obj/c43204h.ll -o obj/c43204h_o.bc
++llvm-dis-16 obj/c43204h_o.bc
+ if [ "`wc -l obj/c43204h_o.ll | awk '{print $1}'` " -gt "40" ]; then
+     BUG=False
+     echo "OK: using LLVM without the aliasing bug"
